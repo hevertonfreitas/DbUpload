@@ -1,0 +1,16 @@
+{
+    "name": "hevertonfreitas/dbupload",
+    "description": "CakePHP 2.x plugin to save uploaded files in the database",
+    "type": "cakephp-plugin",
+    "homepage": "https://github.com/hevertonfreitas/DbUpload",
+    "require": {
+        "cakephp/cakephp": ">=2.4"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Heverton Coneglian de Freitas",
+            "email": "hevertonfreitas1@yahoo.com.br"
+        }
+    ]
+}
