@@ -4,7 +4,8 @@
     "type": "cakephp-plugin",
     "homepage": "https://github.com/hevertonfreitas/DbUpload",
     "require": {
-        "cakephp/cakephp": ">=2.4"
+        "cakephp/cakephp": ">=2.4",
+        "hashids/hashids": "^1.0"
     },
     "license": "MIT",
     "authors": [
