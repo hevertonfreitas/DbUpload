@@ -39,12 +39,7 @@ class DbUploadBehavior extends ModelBehavior
 
                 $model->data[$model->alias]["{$field}_type"] = finfo_file(finfo_open(FILEINFO_MIME_TYPE), $model->data[$model->alias][$field]['tmp_name']);
                 $model->data[$model->alias]["{$field}_size"] = $model->data[$model->alias][$field]['size'];
-
-                $fp = fopen($model->data[$model->alias][$field]['tmp_name'], 'r');
-                $content = fread($fp, filesize($model->data[$model->alias][$field]['tmp_name']));
-                fclose($fp);
-
-                $model->data[$model->alias]["{$field}_content"] = $content;
+                $model->data[$model->alias]["{$field}_content"] = base64_encode(file_get_contents($model->data[$model->alias][$field]['tmp_name']));
                 unset($model->data[$model->alias][$field]);
             }
         }
