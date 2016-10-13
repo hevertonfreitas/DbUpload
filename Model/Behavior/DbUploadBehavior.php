@@ -80,7 +80,7 @@ class DbUploadBehavior extends ModelBehavior
                 unset($model->data[$model->alias][$field]);
             }
         }
-        return parent::beforeSave($model, $options);
+        return true;
     }
 }
 
