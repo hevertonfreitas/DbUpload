@@ -1,12 +1,12 @@
 <?php
 /**
  * DbUpload: https://github.com/hevertonfreitas/DbUpload
- * Copyright (c) Heverton Coneglian de Freitas <hevertonfreitas1@yahoo.com.br>.
+ * Copyright (c) Heverton Coneglian de Freitas <hevertonconeglian@gmail.com>.
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Heverton Coneglian de Freitas <hevertonfreitas1@yahoo.com.br>
+ * @copyright     Heverton Coneglian de Freitas <hevertonconeglian@gmail.com>
  * @link          https://github.com/hevertonfreitas/DbUpload
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
@@ -37,17 +37,15 @@ class UploadController extends AppController
                 "{$this->request->query['m']}." . $this->{$this->request->query['m']}->primaryKey => $pk
             ),
             'fields' => array(
-                "{$this->request->query['m']}.{$this->request->query['f']}_name",
-                "{$this->request->query['m']}.{$this->request->query['f']}_type",
-                "{$this->request->query['m']}.{$this->request->query['f']}_size",
-                "{$this->request->query['m']}.{$this->request->query['f']}_content"
+                "{$this->request->query['m']}.{$this->request->query['f']}"
             )
         ));
+        $file = json_decode($data[$this->request->query['m']][$this->request->query['f']], true);
 
-        header('Content-length: ' . $data[$this->request->query['m']][$this->request->query['f'] . '_size']);
-        header('Content-type: ' . $data[$this->request->query['m']][$this->request->query['f'] . '_type']);
-        header('Content-Disposition: inline; filename=' . $data[$this->request->query['m']][$this->request->query['f'] . '_name']);
-        echo base64_decode($data[$this->request->query['m']][$this->request->query['f'] . '_content']);
+        header('Content-length: ' . $file['size']);
+        header('Content-type: ' . $file['type']);
+        header('Content-Disposition: inline; filename=' . $file['name']);
+        echo base64_decode($file['content']);
 
         die();
     }

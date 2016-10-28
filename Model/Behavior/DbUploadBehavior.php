@@ -1,12 +1,12 @@
 <?php
 /**
  * DbUpload: https://github.com/hevertonfreitas/DbUpload
- * Copyright (c) Heverton Coneglian de Freitas <hevertonfreitas1@yahoo.com.br>.
+ * Copyright (c) Heverton Coneglian de Freitas <hevertonconeglian@gmail.com>.
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Heverton Coneglian de Freitas <hevertonfreitas1@yahoo.com.br>
+ * @copyright     Heverton Coneglian de Freitas <hevertonconeglian@gmail.com>
  * @link          https://github.com/hevertonfreitas/DbUpload
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
@@ -44,17 +44,8 @@ class DbUploadBehavior extends ModelBehavior
     {
         $columns = $model->getColumnTypes();
         foreach ($this->settings[$model->alias]['fields'] as $field) {
-            if (!isset($columns["{$field}_name"])) {
-                throw new FatalErrorException(__('The table %s for the model %s is missing the field %s!', $model->table, $model->alias, "{$field}_name"));
-            }
-            if (!isset($columns["{$field}_type"])) {
-                throw new FatalErrorException(__('The table %s for the model %s is missing the field %s!', $model->table, $model->alias, "{$field}_type"));
-            }
-            if (!isset($columns["{$field}_size"])) {
-                throw new FatalErrorException(__('The table %s for the model %s is missing the field %s!', $model->table, $model->alias, "{$field}_size"));
-            }
-            if (!isset($columns["{$field}_content"])) {
-                throw new FatalErrorException(__('The table %s for the model %s is missing the field %s!', $model->table, $model->alias, "{$field}_content"));
+            if (!isset($columns[$field])) {
+                throw new FatalErrorException(__('The table %s for the model %s is missing the field %s!', $model->table, $model->alias, $field));
             }
         }
     }
@@ -72,15 +63,16 @@ class DbUploadBehavior extends ModelBehavior
     {
         foreach ($this->settings[$model->alias]['fields'] as $field) {
             if (!empty($model->data[$model->alias][$field])) {
-                $model->data[$model->alias]["{$field}_name"] = $model->data[$model->alias][$field]['name'];
+                $data = array(
+                    'name' => $model->data[$model->alias][$field]['name'],
+                    'type' => finfo_file(finfo_open(FILEINFO_MIME_TYPE), $model->data[$model->alias][$field]['tmp_name']),
+                    'size' => $model->data[$model->alias][$field]['size'],
+                    'content' => base64_encode(file_get_contents($model->data[$model->alias][$field]['tmp_name']))
+                );
 
-                $model->data[$model->alias]["{$field}_type"] = finfo_file(finfo_open(FILEINFO_MIME_TYPE), $model->data[$model->alias][$field]['tmp_name']);
-                $model->data[$model->alias]["{$field}_size"] = $model->data[$model->alias][$field]['size'];
-                $model->data[$model->alias]["{$field}_content"] = base64_encode(file_get_contents($model->data[$model->alias][$field]['tmp_name']));
-                unset($model->data[$model->alias][$field]);
+                $model->data[$model->alias][$field] = json_encode($data);
             }
         }
         return true;
     }
 }
-

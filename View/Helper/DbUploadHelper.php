@@ -1,12 +1,12 @@
 <?php
 /**
  * DbUpload: https://github.com/hevertonfreitas/DbUpload
- * Copyright (c) Heverton Coneglian de Freitas <hevertonfreitas1@yahoo.com.br>.
+ * Copyright (c) Heverton Coneglian de Freitas <hevertonconeglian@gmail.com>.
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Heverton Coneglian de Freitas <hevertonfreitas1@yahoo.com.br>
+ * @copyright     Heverton Coneglian de Freitas <hevertonconeglian@gmail.com>
  * @link          https://github.com/hevertonfreitas/DbUpload
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
@@ -25,31 +25,28 @@ class DbUploadHelper extends AppHelper
 
     /**
      * Generates a link that points to the contents of the uploaded file
-     *
-     * @param array $data array of data from the model
-     * @param string $field the field where the Behavior is configured
-     * @param string $primaryKey the primary key field of the table
-     * @return string the url of the uploaded file
+     * 
+     * @param string $model The name of the model where the file is stored
+     * @param string $field The field containing the file
+     * @param string $id The id of the record
+     * @return string The URL of the uploaded file
      */
-    public function uploadUrl($data, $field, $primaryKey = 'id')
+    public function uploadUrl($model, $field, $id)
     {
-        $hashids = new Hashids(Configure::read('Security.salt'));
+        $encodedId = new Hashids(Configure::read('Security.salt'));
 
-        list($model, $campo) = explode('.', $field);
-        $url = Router::url(
-            array(
-                'controller' => 'upload',
-                'action' => 'download',
-                'plugin' => 'dbupload',
-                'admin' => false,
-                '?' => array(
-                    'm' => $model, //model
-                    'f' => $campo, //field
-                    'i' => $hashids->encode($data[$model][$primaryKey]) //primary key
-                )
+        $url = array(
+            'controller' => 'upload',
+            'action' => 'download',
+            'plugin' => 'dbupload',
+            'admin' => false,
+            '?' => array(
+                'm' => $model,
+                'f' => $field,
+                'i' => $encodedId->encode($id)
             )
         );
-        return $url;
-    }
 
+        return Router::url($url);
+    }
 }
