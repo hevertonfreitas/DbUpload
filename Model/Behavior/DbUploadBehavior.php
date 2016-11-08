@@ -62,7 +62,7 @@ class DbUploadBehavior extends ModelBehavior
     public function beforeSave(Model $model, $options = array())
     {
         foreach ($this->settings[$model->alias]['fields'] as $field) {
-            if (!empty($model->data[$model->alias][$field])) {
+            if (!empty($model->data[$model->alias][$field]) && file_exists($model->data[$model->alias][$field]['tmp_name'])) {
                 $data = array(
                     'name' => $model->data[$model->alias][$field]['name'],
                     'type' => finfo_file(finfo_open(FILEINFO_MIME_TYPE), $model->data[$model->alias][$field]['tmp_name']),
@@ -71,8 +71,11 @@ class DbUploadBehavior extends ModelBehavior
                 );
 
                 $model->data[$model->alias][$field] = json_encode($data);
+            } else {
+                unset($model->data[$model->alias][$field]);
             }
         }
         return true;
     }
 }
+
